@@ -1,0 +1,5 @@
+cmake
+dlib
+opencv-python
+face-recognition
+setuptools<70.0.0
