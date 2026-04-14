@@ -58,3 +58,25 @@ class Facerec:
         face_locations = face_locations / self.frame_resizing
         return face_locations.astype(int), face_names
 
+    def add_new_face(self, name, img_path):
+        """
+        Dynamically loads an image, encodes it, and adds it to the face records.
+        Returns True if successful, False if no face was found in the image.
+        """
+        img = cv2.imread(img_path)
+        if img is None:
+            return False
+            
+        rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        encodings = face_recognition.face_encodings(rgb_img)
+
+        if len(encodings) == 0:
+            print(f"[WARNING] No face found in {img_path}, unable to register.")
+            # Optionally remove the invalid image
+            if os.path.exists(img_path):
+                os.remove(img_path)
+            return False
+
+        self.known_face_encodings.append(encodings[0])
+        self.known_face_names.append(name)
+        return True
